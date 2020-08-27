@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
+import _ from 'lodash';
 
 //components 
 import Loading from './Loading'
@@ -9,21 +10,31 @@ import { SearchForm } from "../styledcomponents/SearchBarStyling";
 
 export default function SearchBar() {
   const [value, setValue] = useState("");
+  const [searchString, setSearchString] = useState('')
 
-  const url = `http://api.weatherstack.com/current?access_key=3ba5e386afdcf2427ebc7c7b5c9c7b99&query=atlanta`
+
+
+  const url = query => `http://api.weatherstack.com/current?access_key=3ba5e386afdcf2427ebc7c7b5c9c7b99&query=${query}`
   //todo: define a functions so the it wont call the endpoint after every keystroke 
   // const url = `http://api.weatherstack.com/current?access_key=3ba5e386afdcf2427ebc7c7b5c9c7b99&query=${value}`
 
-  const { data, isLoading, hasError, errorMessage } = useFetch(url)
+  const { data, isLoading, hasError, errorMessage, updateUrl } = useFetch(url)
+  //todo: create an Error Conponent to handle the  error ? 
+  const delayedQuery = useRef(_.debounce(q => url(q), 500)).current;
 
+  const handleChange = e => {
+    e.persist();
+    setValue(e.target.value)
+    delayedQuery(e.target.value);
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
     alert(value);
   };
 
-  console.log(data)
 
+  console.log(url())
 
   if (isLoading) return <Loading />
 
@@ -33,7 +44,7 @@ export default function SearchBar() {
         type="text"
         placeholder="City or Zip Code"
         value={value}
-        onChange={e => setValue(e.target.value)}
+        onChange={handleChange}
       />
       <button type="submit">Search</button>
     </SearchForm>
