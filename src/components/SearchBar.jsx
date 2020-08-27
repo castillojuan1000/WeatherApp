@@ -10,7 +10,7 @@ import { SearchForm } from "../styledcomponents/SearchBarStyling";
 
 export default function SearchBar() {
   const [value, setValue] = useState("");
-  const [searchString, setSearchString] = useState('')
+
 
 
 
@@ -34,7 +34,7 @@ export default function SearchBar() {
   };
 
 
-  console.log(url())
+  console.log(url)
 
   if (isLoading) return <Loading />
 
