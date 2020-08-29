@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react'
-const useFetch = (url) => {
+
+
+const useFetch = (initialUrl) => {
+
+  const [url, updateUrl] = useState(initialUrl)
   const [data, setData] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
   const [hasError, setHasError] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  // const [refetchIndex, setRefetchIndex] = useState(0)
+
+
+  // const refetch = () => setRefetchIndex((prevRefetchIndex) => prevRefetchIndex + 1)
+
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true)
@@ -20,11 +29,13 @@ const useFetch = (url) => {
       } catch (err) {
         setHasError(true)
         setErrorMessage(err.message)
+
+      } finally {
         setIsLoading(false)
       }
     }
     fetchData()
-  }, [])
-  return { data, isLoading, hasError, errorMessage }
+  }, [url])
+  return { data, isLoading, hasError, errorMessage, updateUrl }
 }
 export default useFetch
